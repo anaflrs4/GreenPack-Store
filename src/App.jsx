@@ -1,15 +1,17 @@
 import { useState } from 'react'
 import { Button } from '@/components/ui/button.jsx'
-import { ShoppingCart, Leaf, Package, Star, Plus, Minus, X } from 'lucide-react'
+import { ShoppingCart, Leaf, Package, Star, Plus, Minus, X, FileText } from 'lucide-react'
 import './App.css'
 import ecoPackagingVariety from './assets/eco_packaging_variety.webp'
 import ecoCupsContainers from './assets/eco_cups_containers.jpg'
 import customPackagingBoxes from './assets/custom_packaging_boxes.jpg'
 import customMailerBoxes from './assets/custom_mailer_boxes.jpg'
+import PoliciesPage from './components/PoliciesPage.jsx'
 
 function App() {
   const [cart, setCart] = useState([])
   const [showCart, setShowCart] = useState(false)
+  const [currentPage, setCurrentPage] = useState('home')
 
   const products = [
     {
@@ -85,13 +87,20 @@ function App() {
     return cart.reduce((sum, item) => sum + (item.price * item.quantity), 0)
   }
 
+  if (currentPage === 'policies') {
+    return <PoliciesPage />
+  }
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-green-50 to-emerald-50">
       {/* Header */}
       <header className="bg-white shadow-md sticky top-0 z-50">
         <div className="container mx-auto px-4 py-4">
           <div className="flex items-center justify-between">
-            <div className="flex items-center gap-3">
+            <button 
+              onClick={() => setCurrentPage('home')}
+              className="flex items-center gap-3 hover:opacity-80 transition-opacity"
+            >
               <div className="bg-green-600 p-2 rounded-lg">
                 <Leaf className="text-white w-8 h-8" />
               </div>
@@ -99,19 +108,29 @@ function App() {
                 <h1 className="text-2xl font-bold text-green-800">GreenPack</h1>
                 <p className="text-sm text-gray-600">Empaques Ecológicos</p>
               </div>
+            </button>
+            <div className="flex items-center gap-3">
+              <Button 
+                onClick={() => setCurrentPage('policies')}
+                variant="outline"
+                className="border-green-600 text-green-600 hover:bg-green-50"
+              >
+                <FileText className="w-4 h-4 mr-2" />
+                Políticas B2B
+              </Button>
+              <Button 
+                onClick={() => setShowCart(!showCart)}
+                className="relative bg-green-600 hover:bg-green-700"
+              >
+                <ShoppingCart className="w-5 h-5 mr-2" />
+                Carrito
+                {getTotalItems() > 0 && (
+                  <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full w-6 h-6 flex items-center justify-center font-bold">
+                    {getTotalItems()}
+                  </span>
+                )}
+              </Button>
             </div>
-            <Button 
-              onClick={() => setShowCart(!showCart)}
-              className="relative bg-green-600 hover:bg-green-700"
-            >
-              <ShoppingCart className="w-5 h-5 mr-2" />
-              Carrito
-              {getTotalItems() > 0 && (
-                <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full w-6 h-6 flex items-center justify-center font-bold">
-                  {getTotalItems()}
-                </span>
-              )}
-            </Button>
           </div>
         </div>
       </header>
@@ -284,17 +303,54 @@ function App() {
 
       {/* Footer */}
       <footer className="bg-gray-800 text-white py-8 mt-16">
-        <div className="container mx-auto px-4 text-center">
-          <div className="flex items-center justify-center gap-2 mb-4">
-            <Leaf className="w-6 h-6 text-green-400" />
-            <span className="text-xl font-bold">GreenPack</span>
+        <div className="container mx-auto px-4">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-8">
+            <div className="text-center md:text-left">
+              <div className="flex items-center justify-center md:justify-start gap-2 mb-4">
+                <Leaf className="w-6 h-6 text-green-400" />
+                <span className="text-xl font-bold">GreenPack</span>
+              </div>
+              <p className="text-gray-400 text-sm">
+                Empaques ecológicos y personalizados para tu negocio
+              </p>
+            </div>
+            <div className="text-center">
+              <h4 className="font-bold text-white mb-4">Información</h4>
+              <ul className="space-y-2 text-sm">
+                <li>
+                  <button 
+                    onClick={() => setCurrentPage('home')}
+                    className="text-gray-400 hover:text-green-400 transition-colors"
+                  >
+                    Inicio
+                  </button>
+                </li>
+                <li>
+                  <button 
+                    onClick={() => setCurrentPage('policies')}
+                    className="text-gray-400 hover:text-green-400 transition-colors"
+                  >
+                    Políticas B2B
+                  </button>
+                </li>
+                <li>
+                  <a href="mailto:ventas@greenpack.mx" className="text-gray-400 hover:text-green-400 transition-colors">
+                    Contacto
+                  </a>
+                </li>
+              </ul>
+            </div>
+            <div className="text-center md:text-right">
+              <h4 className="font-bold text-white mb-4">Contacto</h4>
+              <p className="text-gray-400 text-sm mb-2">ventas@greenpack.mx</p>
+              <p className="text-gray-500 text-xs">Disponible de lunes a viernes</p>
+            </div>
           </div>
-          <p className="text-gray-400 mb-2">
-            Empaques ecológicos y personalizados para tu negocio
-          </p>
-          <p className="text-sm text-gray-500">
-            © 2025 GreenPack. Comprometidos con el medio ambiente.
-          </p>
+          <div className="border-t border-gray-700 pt-8 text-center">
+            <p className="text-sm text-gray-500">
+              © 2025 GreenPack. Comprometidos con el medio ambiente.
+            </p>
+          </div>
         </div>
       </footer>
     </div>
